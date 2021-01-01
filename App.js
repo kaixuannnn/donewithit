@@ -17,15 +17,16 @@ import RegisterScreen from './app/screens/RegisterScreen'
 import ListingEditScreen from './app/screens/ListingEditScreen'
 import { useEffect } from 'react'
 import * as ImagePicker from 'expo-image-picker'
+import ImageInput from './app/components/ImageInput'
 
 export default function App() {
-  const requestPermission = async () => {
-    const result = await ImagePicker.requestCameraRollPermissionsAsync()
-    if (!result.granted)
-      alert('You need to enable permission to access the library')
-  }
-  useEffect(() => {
-    requestPermission()
-  }, [])
-  return <Screen></Screen>
+  const [imageUri, setImageUri] = useState()
+  return (
+    <Screen>
+      <ImageInput
+        imageUri={imageUri}
+        onChangeImage={(uri) => setImageUri(uri)}
+      />
+    </Screen>
+  )
 }
