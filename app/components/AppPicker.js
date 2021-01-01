@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import {
   View,
-  TextInput,
   StyleSheet,
-  Platform,
   TouchableWithoutFeedback,
   Modal,
   Button,
@@ -13,21 +11,23 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import colors from '../config/colors'
 import AppText from './AppText'
-import defaultStyles from '../config/styles'
 import PickerItem from './PickerItem'
 
 const AppPicker = ({
   icon,
   items,
+  numberOfColumns = 1,
   onSelectItem,
+  PickerItemComponent = PickerItem,
   placeholder,
   selectedItem,
+  width = '100%',
 }) => {
   const [modalVisible, setmodalVisible] = useState(false)
   return (
     <>
       <TouchableWithoutFeedback onPress={() => setmodalVisible(true)}>
-        <View style={styles.container}>
+        <View style={[styles.container, { width: width }]}>
           {icon && (
             <MaterialCommunityIcons
               name={icon}
@@ -36,9 +36,12 @@ const AppPicker = ({
               style={styles.icon}
             />
           )}
-          <AppText style={styles.text}>
-            {selectedItem ? selectedItem.label : placeholder}
-          </AppText>
+          {selectedItem ? (
+            <AppText style={styles.text}>{selectedItem.label}</AppText>
+          ) : (
+            <AppText style={styles.placeholder}>{placeholder}</AppText>
+          )}
+
           <MaterialCommunityIcons
             name='chevron-down'
             size={20}
@@ -51,9 +54,10 @@ const AppPicker = ({
         <FlatList
           data={items}
           keyExtractor={(item) => item.value.toString()}
+          numColumns={numberOfColumns}
           renderItem={({ item }) => (
-            <PickerItem
-              label={item.label}
+            <PickerItemComponent
+              item={item}
               onPress={() => {
                 setmodalVisible(false)
                 onSelectItem(item)
@@ -71,7 +75,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     borderRadius: 25,
     flexDirection: 'row',
-    width: '100%',
     padding: 15,
     marginVertical: 10,
   },
@@ -79,6 +82,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   text: {
+    flex: 1,
+  },
+  placeholder: {
+    color: colors.medium,
     flex: 1,
   },
 })
