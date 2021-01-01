@@ -15,7 +15,17 @@ import AppPicker from './app/components/AppPicker'
 import LoginScreen from './app/screens/LoginScreen'
 import RegisterScreen from './app/screens/RegisterScreen'
 import ListingEditScreen from './app/screens/ListingEditScreen'
+import { useEffect } from 'react'
+import * as ImagePicker from 'expo-image-picker'
 
 export default function App() {
-  return <ListingEditScreen />
+  const requestPermission = async () => {
+    const result = await ImagePicker.requestCameraRollPermissionsAsync()
+    if (!result.granted)
+      alert('You need to enable permission to access the library')
+  }
+  useEffect(() => {
+    requestPermission()
+  }, [])
+  return <Screen></Screen>
 }
